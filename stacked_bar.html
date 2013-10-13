@@ -1,29 +1,35 @@
 <!DOCTYPE html>
-<meta charset="utf-8">
-<style>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <script type="text/javascript" src="js/d3/d3.v3.min.js"></script>
 
-body {
-  font: 10px sans-serif;
-}
+  <style type="text/css">
 
-.axis path,
-.axis line {
-  fill: none;
-  stroke: #000;
-  shape-rendering: crispEdges;
-}
+      body {
+        font: 10px sans-serif;
+      }
 
-.bar {
-  fill: steelblue;
-}
+      .axis path,
+      .axis line {
+        fill: none;
+        stroke: #000;
+        shape-rendering: crispEdges;
+      }
 
-.x.axis path {
-  display: none;
-}
+      .bar {
+        fill: steelblue;
+      }
 
-</style>
+      .x.axis path {
+        display: none;
+      }
+
+  </style>
+</head>
 <body>
-<script src="js/d3/d3.v3.min.js"></script>
+
+
 <script>
 
 var margin = {top: 20, right: 20, bottom: 30, left: 40},
@@ -139,12 +145,15 @@ d3.csv("data.csv", function(error, data) {
       .attr("height", 18)
       .attr("sr", "status")
       .on("mouseover", function(d) {
+        current = d3.select(this);
         d3.selectAll("rect").style("opacity", 0.3)
         d3.selectAll("."+d.toLowerCase())
         .style("opacity", 1);
+        current.style("opacity", 1);
       })
       .on("mouseout", function(d) {
         d3.selectAll("rect").style("opacity", 1);
+
       })
       .style("fill", color);
 
@@ -169,3 +178,5 @@ d3.csv("data.csv", function(error, data) {
 });
 
 </script>
+</body>
+</html>  
