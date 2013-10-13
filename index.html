@@ -20,8 +20,6 @@
 
   <script>
 
-  var user;
-
   window.fbAsyncInit = function() {
     FB.init({
       appId      : '360462837421922', // App ID
@@ -33,8 +31,9 @@
 
 
     function fb_login(){
-      console.log("PERMISSIONS!");
-      FB.login(function(response) {console.log("successfully logged user in"); }, {scope: 'email,user_likes,user_videos,user_photos,user_status,user_friends,user_activities'})
+      FB.login(function(response) { 
+        //Do nothing dealt with later
+       }, {scope: 'email,user_likes,user_videos,user_photos,user_status,user_friends,user_activities'})
     }
 
     $("#fb_login_button").click(fb_login);
@@ -55,6 +54,7 @@
         fb_login();
       }
     });
+
   };
 
   // Load the SDK asynchronously
@@ -68,22 +68,17 @@
 
 
   ////// THIS POINT ONWARDS IS OUR OWN CODE!!!!! 
+  var DEFAULT_TIMESTAMP = "1262325600"; //1st jan 2010
+  var user = {};
+
   //Debug function for API calls to FB
   function checkAPI(str) {
-    
-    var answer;
-
     FB.api(str, function(d){
       console.log(d);
-      answer = d
     });
-
-    return answer;
   }
 
-  //Massive user dictionary in which we'll store all data
-  user = {};
-
+  
   // Here we run a very simple test of the Graph API after login is successful. 
   // This testAPI() function is only called in those cases. 
   function initialize() {
@@ -114,6 +109,34 @@
         $("#basic-info #gender").html("You are a " + gender);
       });
   }
+
+  //Called by caller, given to callback function
+  function getFromAPI(str, receiver){
+    FB.api(str, function(d) {
+      receiver(d);
+    })
+  }
+
+  var data_list = [];
+  function dataCaller(call) {
+   getFromAPI(call, dataReceiver);
+  }
+
+  function dataReceiver(x){
+    if (x === "undefined") {
+      return;
+    }
+    data_list.push(x.data);
+    console.log(x);
+
+    if (x.paging && x.paging.next) {
+      dataCaller(x.paging.next);  
+    }
+  }
+
+
+
+
   </script>
 
   <div id="basic-info">
