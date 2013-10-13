@@ -13,36 +13,48 @@
 </head>
 
 <body>
-  <div id="fb-root" scope="user_status,user_photos,user_videos,user_likes,user_groups,user_activities"></div>
+  <div id="fb-root"></div>
+  <div class="fb-login"> 
+    <div id="fb_login_button"> Login with Facebook </div>
+  </div>
+
   <script>
 
   var user;
 
   window.fbAsyncInit = function() {
-  FB.init({
-    appId      : '360462837421922', // App ID
-    channelUrl : '//127.0.0.1/~bhaviksingh/fb-viz/channel.html', // Channel File
-    status     : true, // check login status
-    cookie     : true, // enable cookies to allow the server to access the session
-    xfbml      : true  // parse XFBML
-  });
+    FB.init({
+      appId      : '360462837421922', // App ID
+      channelUrl : '//127.0.0.1/~bhaviksingh/fb-viz/channel.html', // Channel File
+      status     : true, // check login status
+      cookie     : true, // enable cookies to allow the server to access the session
+      xfbml      : true  // parse XFBML
+    });
 
-  function fb_login(){
-    FB.login(function(response) {console.log("successfully logged user in")}, {scope: 'email,user_likes,user_videos,user_photos,user_status,user_friends,user_activities,user_actions.video,user_action.music, user_action.books, publish_actions'})
-  }
-  FB.Event.subscribe('auth.authResponseChange', function(response) {
-    // Here we specify what we do with the response anytime this event occurs. 
-    if (response.status === 'connected') {
-      // Logged in, initialize
-      initialize();
-    } else if (response.status === 'not_authorized') {
-      // Is logged into fb but not the app
-      fb_login();
-    } else {
-      // Not logged into facebook or app
-      fb_login();
+
+    function fb_login(){
+      console.log("PERMISSIONS!");
+      FB.login(function(response) {console.log("successfully logged user in"); }, {scope: 'email,user_likes,user_videos,user_photos,user_status,user_friends,user_activities'})
     }
-  });
+
+    $("#fb_login_button").click(fb_login);
+
+    FB.Event.subscribe('auth.authResponseChange', function(response) {
+
+      $("#fb_login_button").hide();
+
+      // Here we specify what we do with the response anytime this event occurs. 
+      if (response.status === 'connected') {
+        // Logged in, initialize
+        initialize();
+      } else if (response.status === 'not_authorized') {
+        // Is logged into fb but not the app
+        fb_login();
+      } else {
+        // Not logged into facebook or app
+        fb_login();
+      }
+    });
   };
 
   // Load the SDK asynchronously
@@ -75,38 +87,34 @@
   // Here we run a very simple test of the Graph API after login is successful. 
   // This testAPI() function is only called in those cases. 
   function initialize() {
-    console.log('Welcome!  Fetching your information.... ');
-    
-    //Get API Pertinant information
-    user.fb = {};
-    user.fb.id = FB.getAuthResponse().userID;
-    user.fb.auth_token = FB.getAuthResponse().accessToken;
-
-    FB.api('/me', function(response) {
+      console.log('Welcome!  Fetching your information.... ');
       
-      console.log(FB.getAuthResponse());
-      console.log(response);
+      //Get API Pertinant information
+      user.fb = {};
+      user.fb.id = FB.getAuthResponse().userID;
+      user.fb.auth_token = FB.getAuthResponse().accessToken;
 
-      //Get basic information
-      user.name = response.name;
-      user.gender = response.gender;
+      FB.api('/me', function(response) {
+        
+        console.log(FB.getAuthResponse());
+        console.log(response);
 
-      var gender = response.gender;
-      if (gender === "male") {
-        gender = "dude";
-      } else if (gender ===  "female") {
-        gender = "chick";
-      }
+        //Get basic information
+        user.name = response.name;
+        user.gender = response.gender;
 
-      $("#basic-info #name").html(response.name);
-      $("#basic-info #gender").html("You are a " + gender);
-    });
+        var gender = response.gender;
+        if (gender === "male") {
+          gender = "dude";
+        } else if (gender ===  "female") {
+          gender = "chick";
+        }
+
+        $("#basic-info #name").html(response.name);
+        $("#basic-info #gender").html("You are a " + gender);
+      });
   }
   </script>
-
-  <div class="fb-login">
-    <div class="fb-login-button" show-faces="true" width="200" max-rows="1"></div>  
-  </div>
 
   <div id="basic-info">
     <div > Welcome to your Facebook account, <span id="name"> </span> </div> 
