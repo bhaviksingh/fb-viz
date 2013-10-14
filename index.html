@@ -231,7 +231,7 @@
         date_to_post = {}
         big_data[type] = date_to_post;
       }
-      
+
       console.log("PARSE THE DATA");
       console.log(data_list);
 
@@ -265,7 +265,6 @@
     getFromAPI("/me/" + type + "?since=" + start_date.unix_date() + "&until=" + end_date.unix_date() , dataReceiver, false, start_date.unix_date(), end_date.unix_date());
     whenDoneParseData(type);
   }
-
 
   
   // Basic information about the Users ID and stuff
