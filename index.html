@@ -88,7 +88,6 @@
     debug_variable = x;
   }
 
-
   // Basic information about the Users ID and stuff
   function initialize() {
       console.log('Welcome!  Fetching your information.... ');
@@ -97,7 +96,6 @@
       user.fb = {};
       user.fb.id = FB.getAuthResponse().userID;
       user.fb.auth_token = FB.getAuthResponse().accessToken;
-
       FB.api('/me', function(response) {
         
         console.log(FB.getAuthResponse());
@@ -123,6 +121,7 @@
           //something;
           var jsonObject = getData("JAN 2013", "FEB 2013");
           console.log(jsonObject);
+          render_svg(jsonObject, 10, 20);
           show_populars(jsonObject);
           console.log("DONEFISH");
         }
@@ -139,6 +138,8 @@
     <div > Welcome to your Facebook account, <span id="name"> </span> </div> 
     <div id="gender"> </div>
   </div>
+
+  <div id="punchcard"></div>
 
 </body>
 

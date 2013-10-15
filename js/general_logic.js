@@ -18,8 +18,8 @@ function getMostPopular(type, JsonSubset) {
   var pops = 0;
   var popLikes = 0;
   var popComments = 0;
-  var map = {"statuses":"message", "videos":"url", "photos":"url"};
-  var data = map[type];
+  var mapSteph = {"statuses":"message", "videos":"url", "photos":"url"};
+  var data = mapSteph[type];
   for (var time in JsonSubset) {
     var timeSubset = JsonSubset[time];
     if(!timeSubset) {
