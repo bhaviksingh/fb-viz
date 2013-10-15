@@ -18,7 +18,7 @@ function getMostPopular(type, JsonSubset) {
   var pops = 0;
   var popLikes = 0;
   var popComments = 0;
-  var mapSteph = {"statuses":"message", "videos":"url", "photos":"url"};
+  var mapSteph = {"statuses":"message", "videos":"source", "photos":"source"};
   var data = mapSteph[type];
   for (var time in JsonSubset) {
     var timeSubset = JsonSubset[time];
@@ -43,5 +43,6 @@ function getMostPopular(type, JsonSubset) {
     }
     
   };
+  console.log(popObject);
   return popObject;
 }
