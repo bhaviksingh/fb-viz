@@ -5,10 +5,11 @@ function change_input() {
 
 function re_render(jsonObject) {
   update_svg();
-  var types = ["Status", "Photo", "Video"];
+  var types = ["statuses", "photos", "videos"];
+  var typs = ["status", "photo", "video"];
   for (var ty in types) {
-    arg = getMostPopular(ty, jsonObject);
-    update(ty, arg);
+    arg = getMostPopular(types[ty], jsonObject);
+    update(typs[ty], arg);
   };
 }
 
@@ -17,40 +18,30 @@ function getMostPopular(type, JsonSubset) {
   var pops = 0;
   var popLikes = 0;
   var popComments = 0;
+  var map = {"statuses":"message", "videos":"url", "photos":"url"};
+  var data = map[type];
   for (var time in JsonSubset) {
     var timeSubset = JsonSubset[time];
+    if(!timeSubset) {
+      continue;
+    };
     var typeData = timeSubset[type];
     for (var i in typeData) {
       var typeObject = typeData[i];
-      var object = typeObject.data;
-      var popularity = typeObject.likes.length + typeObject.comments.length;
+      var object = typeObject[data];
+      var popularity = 0;
+      if (typeObject.likes) {
+        popularity += typeObject.likes.data.length; 
+      }; 
+      if (typeObject.comments) {
+        popularity += typeObject.comments.data.length;
+      };
       if ((pops < popularity) || (pops == 0)) {
         pops = popularity;
         popObject = object;
-        popComments = typeObject.comments.length;
-        popLikes = typeObject.likes.length;
       }
     }
     
   };
   return popObject;
-}
-
-var exampleDataset = {
-    "january 2010": {
-      "status": [
-        {
-          "data":"he is so cute",
-          "likes":["stephanie"],
-          "comments":[]
-        },
-        {
-          "data":"she sucks",
-          "likes":["bah", "boo"],
-          "comments":['stephanie']
-        }
-      ],
-      "photos": [
-      ]
-  }
 }

@@ -1,22 +1,23 @@
 var colors = ["#6363FF", "#63FFCB", "#FF7363"];
-var types = ["Status", "Photo", "Video"];
+var typesSteph = ["Status", "Photo", "Video"];
 
 function show_populars(JsonSet) {
     // fake data - real: getMostPopular(type)
   // var status = "He is so cute <3";
-  var status = getMostPopular("status", JsonSet);
-  var photo = getMostPopular("photo", JsonSet);
-  var video = getMostPopular("video", JsonSet);
+  console.log("showing populars");
+  var status = getMostPopular("statuses", JsonSet);
+  var photo = getMostPopular("photos", JsonSet);
+  var video = getMostPopular("videos", JsonSet);
 
-  photo = "http://i.imgur.com/YA6jx3J.png";
-  video = "https://fbcdn-video-a.akamaihd.net/hvideo-ak-ash3/v/867980_10151488114683049_22347748_n.mp4?oh=99665a09b75b87cbb01f31f876cbc271&oe=525CDD19&__gda__=1381868364_e8b8abeb0360870b1fd0017848abe658";
-  status = "he's so nice";
+  // photo = "http://i.imgur.com/YA6jx3J.png";
+  // video = "https://fbcdn-video-a.akamaihd.net/hvideo-ak-ash3/v/867980_10151488114683049_22347748_n.mp4?oh=99665a09b75b87cbb01f31f876cbc271&oe=525CDD19&__gda__=1381868364_e8b8abeb0360870b1fd0017848abe658";
+  // status = "he's so nice";
 
   var args = [status, photo, video];
   
   var i = 0;
-  for (var i =0; i<types.length; i+=1) {
-    var t = types[i];
+  for (var i =0; i<typesSteph.length; i+=1) {
+    var t = typesSteph[i];
     show(t, colors[i], args[i]);
   }
 }
@@ -69,9 +70,17 @@ function show_photo(link) {
 }
 
 function show_video(link) {
-    document.write("<div id='video_holder'> <video controls class='video' id='popular_video'></video> </div>");
-    d3.select("#popular_video").src = link;
+    var newDiv = document.createElement("div");
+    newDiv.id = "video_holder";
+    var video = document.createElement("video");
+    video.controls = "controls";
+    video.id = "popular_video";
+    video.class = "video";
+
     var source = document.createElement("source");
     source.src = link;
-    document.getElementById("popular_video").appendChild(source);
+
+    video.appendChild(source);
+    newDiv.appendChild(video);
+    document.body.appendChild(newDiv);
 }

@@ -21,7 +21,6 @@
 
       if (typeof(constructor) === "undefined") {
       
-         
           str_split = str_date.split(" ");
           if (MONTH.indexOf(str_split[0].trim()) < 0 || YEARS.indexOf(str_split[1].trim()) < 0) {
             console.log("ERROR: Invalid date - " + str_date);
@@ -152,7 +151,7 @@
   }
 
   function dataReceiver(response) {
-    //console.log("Received response with " + response.data.length);
+    // console.log("Received response with " + response.data);
     //console.log(response);
     for (var i=0; i< response.data.length; i++){
       //data_list.push(response.data[i]);
