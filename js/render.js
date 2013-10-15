@@ -54,10 +54,8 @@ function render_svg(jsonObject, max_likes, max_comments) {
     var jsonArray = [];
     var ids = [];
     for (var i in jsonObject) {
-      //console.log(i);
       var monthData = jsonObject[i];
       for (var j in monthData) {
-        //console.log(j);
         var typeData = monthData[j];
         var t = ts[j];
         
@@ -90,14 +88,14 @@ function render_svg(jsonObject, max_likes, max_comments) {
           if(likes != -1) {
             var txt = "{'" + t + "' : { 'likes': " + likes + ", 'comments': " + comments + '}}';
             var obj = eval ("(" + txt + ")");
-            //console.log(obj);
             jsonArray.push(obj);  
           };
         };
         
       };
-      return jsonArray;
+      
     };
+    return jsonArray;
   };
 
   // circles 
@@ -107,13 +105,7 @@ function render_svg(jsonObject, max_likes, max_comments) {
   }
 
   jsonArray = translate(jsonObject);
-  console.log(jsonArray);
-  // jsonArray =  [{
-  //   "status" : {
-  //     "likes" : 5,
-  //     "comments" : 10
-  //   }
-  // }]
+
   svg.selectAll("circle")
       .data(jsonArray)
       .enter()
