@@ -2,6 +2,11 @@
 <html lang="en">
 <head>
   <meta charset="utf-8">
+  <script src="js/jq.js"> </script>
+  <script src="js/general_logic.js"></script>
+  <script src="js/update.js"></script>
+  <script src="js/show.js"></script>
+  <script src="js/render.js"></script>
   <script src="http://d3js.org/d3.v3.min.js" charset="utf-8"></script>
   <link rel="stylesheet" type="text/css" href="css/style.css"/>
   <style type="text/css">
@@ -29,248 +34,19 @@
 </head>
 <body>
 
-
 <script>
-
-var margin = {top: 20, right: 20, bottom: 30, left: 40},
-    width = 700 - margin.left - margin.right,
-    height = 400 - margin.top - margin.bottom;
-
-var x = d3.scale.ordinal()
-    .rangeRoundBands([0, width], .1);
-
-var y = d3.scale.linear()
-    .rangeRound([height, 0]);
-
-var color = d3.scale.ordinal().range(["#6363FF", "#63FFCB","#FBFF63", "#FFB363", "#FF7363", "#FF6364"]);
-
-var type = d3.scale.ordinal().range(["Status", "Link", "Like", "Photo", "Video"]);
-
-var xAxis = d3.svg.axis()
-    .scale(x)
-    .orient("bottom");
-
-var yAxis = d3.svg.axis()
-    .scale(y)
-    .orient("left")
-    .tickFormat(d3.format(".2s"));
-
-var svg = d3.select("body").append("svg")
-    .attr("width", width + margin.left + margin.right)
-    .attr("height", height + margin.top + margin.bottom)
-  .append("g")
-    .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
-
-var dataset = 
-            {
-                "january 2010": {
-                    "Status": {
-                        "count": 5,
-                        "data": [
-                            "he is so cute"
-                        ]
-                    },
-                    "Link": {
-                        "count": 10,
-                        "data": [
-                            "google.com"
-                        ]
-                    }
-                }
-            }
-
-d3.csv("data.csv", function(error, data) {
-  color.domain(d3.keys(data[0]).filter(function(key) { return key !== "Time"; }));
-  type.domain(d3.keys(data[0]).filter(function(key) { return key !== "Time"; }));
-
-  data.forEach(function(d) {
-    var y0 = 0;
-    d.types = color.domain().map(function(name) { return {name: name, y0: y0, y1: y0 += +d[name]}; });
-    d.total = d.types[d.types.length - 1].y1;
-  });
-
-  // able to sort... 
-  // data.sort(function(a, b) { return b.total - a.total; });
-
-
-  x.domain(data.map(function(d) { return d.Time; }));
-  y.domain([0, d3.max(data, function(d) { return d.total; })]);
-
-  svg.append("g")
-      .attr("class", "x axis")
-      .attr("transform", "translate(0," + height + ")")
-      .call(xAxis);
-
-  svg.append("g")
-      .attr("class", "y axis")
-      .call(yAxis)
-      .append("text")
-      .attr("transform", "rotate(-90)")
-      .attr("y", 6)
-      .attr("dy", ".71em")
-      .style("text-anchor", "end")
-      .text("Count");
-
-  var Time = svg.selectAll(".Time")
-      .data(data)
-      .enter().append("g")
-      .attr("class", "g")
-      .attr("transform", function(d) { return "translate(" + x(d.Time
-   ) + ",0)"; });
-
-  Time.selectAll("rect")
-      .data(function(d) { return d.types; })
-      .enter().append("rect")
-      .attr("width", x.rangeBand())
-      .attr("y", function(d) { return y(d.y1); })
-      .attr("height", function(d) { return y(d.y0) - y(d.y1); })
-      .style("fill", function(d) { return color(d.name); })
-      .attr("class", function(d) {return type(d.name); });
-
-  // var svg_new = d3.select("body").append("svg")
-  //   .attr("width", width + margin.left + margin.right)
-  //   .attr("height", height + margin.top + margin.bottom)
-  // .append("g")
-  //   .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
-  var svg_new = svg;
-  var legend = svg_new.selectAll(".legend")
-      .data(color.domain().slice().reverse())
-      .enter().append("g")
-      .attr("class", "legend")
-      .attr("transform", function(d, i) { return "translate(0," + i * 20 + ")"; });
-
-  legend.append("rect")
-      .attr("x", width - 18)
-      .attr("width", 18)
-      .attr("height", 18)
-      .on("mouseover", function(d) {
-        current = d3.select(this);
-        d3.selectAll("rect").style("opacity", 0.3)
-        d3.selectAll("."+d)
-        .style("opacity", 1);
-        current.style("opacity", 1);
-      })
-      .on("mouseout", function(d) {
-        d3.selectAll("rect").style("opacity", 1);
-
-      })
-      .style("fill", color);
-
-  legend.append("text")
-      .attr("x", width - 24)
-      .attr("y", 9)
-      .attr("dy", ".35em")
-      .style("text-anchor", "end")
-      .text(function(d) { return d; });
-
-  function mouseover(d) {
-    svg.selectAll("rect")
-        .attr("fill", red);
-  }
-
-  function mouseout(d) {
-  svg.selectAll("path.link.source-" + d.key)
-      .attr("fill", blue);
-}
-
-});
-
-</script>
-<br>
-<br>
-<p class="popular"> Most Popular </p>
-<script>
-  
-
-  var colors = ["#6363FF", "#63FFCB","#FBFF63", "#FFB363", "#FF7363", "#FF6364"];
-  var types = ["Status", "Link", "Like", "Photo", "Video"];
-
-  function show_status(status) {
-      var newP = document.createElement("p");
-      var text = document.createTextNode(status);
-      newP.className = "status";
-      // img.width = "300px";
-      newP.appendChild(text);
-      // // This next line will just add it to the <body> tag
-      document.body.appendChild(newP);
-  }
-
-  function show_photo(link) {
-      var newDiv = document.createElement("div");
-      var img = document.createElement("img");
-      img.src = link;
-      newDiv.className = "photo";
-      newDiv.appendChild(img);
-      // // This next line will just add it to the <body> tag
-      document.body.appendChild(newDiv);
-  }
-
-  function show_video(link) {
-      document.write("<video controls class='video' id='popular_video'></video>");
-      d3.select("#popular_video").src = link;
-      var source = document.createElement("source");
-      source.src = link;
-      document.getElementById("popular_video").appendChild(source);
-  }
-
-  function update_status(status) {
-    // how to update
-    d3.selectAll(".status").text(status);
-  }
-
-  function update_photo(photo) {
-    d3.selectAll(".photo").src(photo);
-  }
-
-  function add_title(title, color) {
-    var newDiv = document.createElement("div");
-    if (title == "Video") {
-      newDiv.className = "title-video";
-    } else {
-      newDiv.className = "title";
-    };
-    newDiv.id = title;
-    newDiv.appendChild(document.createTextNode(title));
-    document.body.appendChild(newDiv);
-    d3.select("#"+title).style("color", color);
-  }
-
-  function show(type, color, arg) {
-    add_title(type, color);
-    if (type == "Status") {
-      show_status(arg);
-    } else if (type == "Photo") {
-      show_photo(arg);
-    } else if (type == "Video") {
-      document.write("<br>");
-      show_video(arg);
-    } else if (type == "Link") {
-      show_status(arg);
-    } else {
-      console.log("wrong type");
-    }
-  }
-
-  // add_title("Status", colors[0]);
-  
-  var status = "He is so cute <3";
-  var image_link = "test.jpg";
-  var video_link = "https://fbcdn-video-a.akamaihd.net/hvideo-ak-ash3/v/867980_10151488114683049_22347748_n.mp4?oh=99665a09b75b87cbb01f31f876cbc271&oe=525CDD19&__gda__=1381868364_e8b8abeb0360870b1fd0017848abe658";
-  var link_link = "google.com";
-  var args = [status, link_link, null, image_link, video_link];
-  var i = 0;
-  for (var i =0; i<types.length; i+=1) {
-    console.log(i);
-    var t = types[i];
-    console.log(t);
-    if (t == "Like") {
-      continue;
-    }
-    show(t, colors[i], args[i]);
-  }
+// initial render
+render_svg("data.csv");
 
 </script>
 
+<br>
+<br>
+<p class='popular'> Most Popular </p>
+
+<script>
+show_populars("");
+</script>
 
 
 </body>

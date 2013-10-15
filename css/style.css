@@ -28,6 +28,15 @@ body{
 	font-size: 12px;
 }
 
+.link {
+	padding:2px 6px 4px 6px; 
+	color: #555555; 
+	background-color: #eeeeee; 
+	border: #dddddd 2px solid;
+	display:inline-block;
+	font-size: 12px;
+}
+
 .title {
 	font-weight: bold;
 	font-size: 16px;
