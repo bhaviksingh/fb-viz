@@ -5,7 +5,7 @@ function change_input() {
 
 function re_render(jsonObject) {
   update_svg();
-  var types = ["status", "photo", "video"];
+  var types = ["Status", "Photo", "Video"];
   for (var ty in types) {
     arg = getMostPopular(ty, jsonObject);
     update(ty, arg);
