@@ -124,7 +124,13 @@
   var types = ["statuses", "photos", "videos"];
   var type_counter = 0;
 
-  function getAll() {
+  var finished_callback;
+  function getAll(callback) {
+   
+    if (typeof(finished_callback) == "undefined") {
+      finished_callback = callback;
+    }
+
     var req = "/me/" + types[type_counter] + "?since=" + first_date.unix_date();
     console.log("Starting to get: " + req)
     getNext(req);
@@ -178,6 +184,7 @@
       if (type_counter == types.length) {
         console.log("Finished all!")
         console.log(all_info);
+        finished_callback();
         return;
       } else {
         getAll();

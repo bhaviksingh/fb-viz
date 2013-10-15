@@ -113,7 +113,14 @@
         $("#basic-info #gender").html("You are a " + gender);
 
         console.log("Getting all data");
-        getAll();
+
+        function called_when_done() {
+          //something;
+          console.log("DONEFISH");
+        }
+
+        getAll(called_when_done);
+
       });
   }
 
