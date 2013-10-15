@@ -165,3 +165,8 @@ function render_svg(jsonObject, max_likes, max_comments) {
       .style("text-anchor", "end")
       .text(function(d) { return d; });
 }
+
+function re_render_svg(jsonObject, max_likes, max_comments) {
+  d3.select("svg").remove();
+  render_svg(jsonObject, max_likes, max_comments);
+}
