@@ -7,15 +7,18 @@
 <head>
 	<meta http-equiv="content-type" content="text/html; charset=utf-8">
 	<title>Tamber</title>
+  <link rel="stylesheet" href="http://code.jquery.com/ui/1.8.20/themes/base/jquery-ui.css" type="text/css" media="all" />
 	<link rel="stylesheet" type="text/css" href="css/reset.css"/>
   <link rel="stylesheet" type="text/css" href="css/style.css"/>
   <script src="http://d3js.org/d3.v3.min.js" charset="utf-8"></script>
 	<script src="js/jq.js"> </script>
   <script src="js/fb_parser.js"></script>
+  <script src="js/slider.js"></script>
   <script src="js/general_logic.js"></script>
   <script src="js/update.js"></script>
   <script src="js/show.js"></script> 
   <script src="js/render.js"></script>
+  <script src="http://code.jquery.com/ui/1.10.3/jquery-ui.js"></script>
 
 </head>
 
@@ -96,8 +99,9 @@
       user.fb = {};
       user.fb.id = FB.getAuthResponse().userID;
       user.fb.auth_token = FB.getAuthResponse().accessToken;
+
       FB.api('/me', function(response) {
-        
+          
         console.log(FB.getAuthResponse());
         console.log(response);
 
@@ -114,30 +118,67 @@
 
         $("#basic-info #name").html(response.name);
         $("#basic-info #gender").html("You are a " + gender);
+      });
 
-        console.log("Getting all data");
+      console.log("Getting all data");
 
-        function called_when_done() {
-          //something;
-          var jsonObject = getData("JAN 2013", "FEB 2013");
-          console.log(jsonObject);
-          render_svg(jsonObject, 10, 20);
-          show_populars(jsonObject);
-          console.log("DONEFISH");
+      function slider_callback(a,b) {
+        var jsonObject = getData(a,b);
+        console.log("SLIDER CHANGED, UPDATING RENDER");
+        console.log(jsonObject);
+        re_render_svg(jsonObject, 10, 20);
+      }
+
+      function data_callback(left_boundary, right_boundary) {
+
+        $("#wait").hide();
+
+        //something;
+        var default_start = "JAN 2012";
+        var default_end = "MAR 2013";
+
+        if (typeof(left_boundary) !== "undefined") {
+          console.log("Finished data callback left, right bound is " + left_boundary + "," + right_boundary);
+          startSlider(left_boundary, right_boundary, default_start, default_end, slider_callback);
+        } else {
+          //Start slider with default boundaries
         }
 
-        getAll(called_when_done);
+        var jsonObject = getData(default_start, default_end);
+        render_svg(jsonObject);
+        show_populars(jsonObject);
+        
+      }
 
-      });
+      getAll(data_callback);
   }
-
+      
 
   </script>
+
+  <div id="wait">
+    <div class="message"> Please wait, gathering data </div>
+  </div>
 
   <div id="basic-info">
     <div > Welcome to your Facebook account, <span id="name"> </span> </div> 
     <div id="gender"> </div>
   </div>
+
+  <div id="slider">
+
+    <div id="slider_amount" style="border: 0; color: #f6931f; font-weight: bold;"></div>
+
+    <div class="ui-slider-wrapper ui-widget horizontal">
+        
+       <div id="slider-range"></div>
+       <div class="ui-slider-labels" id="slider-ticks">
+       </div>
+
+    </div>
+
+  </div>
+  
 
   <div id="punchcard"></div>
 

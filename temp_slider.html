@@ -1,0 +1,51 @@
+<!DOCTYPE HTML>
+
+<html>
+
+
+
+<head>
+	<meta http-equiv="content-type" content="text/html; charset=utf-8">
+	<title>Tamber</title>
+	<link rel="stylesheet" type="text/css" href="css/reset.css"/>
+	<link rel="stylesheet" href="http://code.jquery.com/ui/1.8.20/themes/base/jquery-ui.css" type="text/css" media="all" />
+	<link rel="stylesheet" type="text/css" href="css/style.css"/>
+
+	<script src="http://code.jquery.com/jquery-1.9.1.js"></script>
+	<script src="http://code.jquery.com/ui/1.10.3/jquery-ui.js"></script>
+	<script src="js/fb_parser.js"></script>
+	<script src="js/slider.js"></script>
+
+	<script>
+	$(document).ready(function(){
+		//Test out the slider
+		startSlider("JAN 2010", "NOV 2013", "JUN 2012","JUL 2013", function(a,b) {console.log(":" + a + " " + b);});
+	})
+	</script>
+
+</head>
+
+<body>
+
+	<div id="slider">
+		<p>
+			<label for="amount">Month: </label>
+			<div id="slider_amount" style="border: 0; color: #f6931f; font-weight: bold;"></div>
+		</p>
+
+		<div class="ui-slider-wrapper ui-widget horizontal">
+		    
+		   <div id="slider-range"></div>
+		   <div class="ui-slider-labels" id="slider-ticks">
+		   </div>
+
+		</div>
+
+	</div>
+	
+
+</body>
+
+</html>
+
+
