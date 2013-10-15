@@ -3,16 +3,6 @@ function change_input() {
   getData(start, end);
 }
 
-function re_render(jsonObject) {
-  update_svg();
-  var types = ["statuses", "photos", "videos"];
-  var typs = ["status", "photo", "video"];
-  for (var ty in types) {
-    arg = getMostPopular(types[ty], jsonObject);
-    update(typs[ty], arg);
-  };
-}
-
 function getMostPopular(type, JsonSubset) {
   var popObject = 0;
   var pops = 0;

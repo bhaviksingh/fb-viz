@@ -19,8 +19,8 @@ function render_svg(jsonObject, max_likes, max_comments) {
       .attr("y", function () { return h/2-5; });
 
   // axis
-  var x = d3.scale.linear().domain([0, max_likes]).range([left_pad, w-pad]),
-      y = d3.scale.linear().domain([max_comments, 0]).range([pad, h-pad*2]);
+  var x = d3.scale.linear().domain([0, max_likes]).range([left_pad, w-pad]);
+  var y = d3.scale.linear().domain([max_comments, 0]).range([pad, h-pad*2]);
 
   var xAxis = d3.svg.axis()
       .scale(x)
@@ -42,7 +42,7 @@ function render_svg(jsonObject, max_likes, max_comments) {
       .attr("transform", "translate("+(left_pad-pad)+", 0)")
       .call(yAxis);
 
-  // y = d3.scale.linear().domain([0, max_comments]).range([pad, h-pad*2]);
+  //y = d3.scale.linear().domain([0, max_comments]).range([pad, h-pad*2]);
 
   function isIn(wd, arrValues) {
     if (arrValues.indexOf(wd) > -1) {return true;}
@@ -50,9 +50,10 @@ function render_svg(jsonObject, max_likes, max_comments) {
   };
 
   function translate(jsonObject) {
-    var ts = {"statuses": "status", "photos": "photo", "videos": "photo"};
+    var ts = {"statuses": "status", "photos": "photo", "videos": "video"};
     var jsonArray = [];
     var ids = [];
+
     for (var i in jsonObject) {
       var monthData = jsonObject[i];
       for (var j in monthData) {
@@ -95,6 +96,7 @@ function render_svg(jsonObject, max_likes, max_comments) {
       };
       
     };
+    console.log(jsonArray);
     return jsonArray;
   };
 
@@ -105,7 +107,7 @@ function render_svg(jsonObject, max_likes, max_comments) {
   }
 
   jsonArray = translate(jsonObject);
-
+  
   svg.selectAll("circle")
       .data(jsonArray)
       .enter()
@@ -156,7 +158,17 @@ function render_svg(jsonObject, max_likes, max_comments) {
       .text(function(d) { return d; });
 }
 
+function re_render(jsonObject) {
+  var types = ["statuses", "photos", "videos"];
+  var typs = ["status", "photo", "video"];
+  for (var ty in types) {
+    arg = getMostPopular(types[ty], jsonObject);
+    update(typs[ty], arg);
+  };
+}
+
 function re_render_svg(jsonObject, max_likes, max_comments) {
   d3.select("svg").remove();
+  re_render(jsonObject);
   render_svg(jsonObject, max_likes, max_comments);
 }
