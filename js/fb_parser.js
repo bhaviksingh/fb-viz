@@ -169,7 +169,12 @@
         all_info[post_time.string_date()]  = {};
         for (var i =0; i<types.length; i++) {
           var type = types[i];
-          all_info[post_time.string_date()][type] = [post];
+          if (type == types[type_counter]) {
+            all_info[post_time.string_date()][type] = [post];
+          }
+          else {
+            all_info[post_time.string_date()][type] = [];
+          }
         }
       }
 
