@@ -1,6 +1,5 @@
 var colors = ["#6363FF", "#63FFCB", "#FF7363"];
-var types = ["status", "photo", "video"];
-
+var types = ["Status", "Photo", "Video"];
 
 function show_populars(JsonSet) {
     // fake data - real: getMostPopular(type)
@@ -9,7 +8,7 @@ function show_populars(JsonSet) {
   var photo = getMostPopular("photo", JsonSet);
   var video = getMostPopular("video", JsonSet);
 
-  photo = "test.jpg";
+  photo = "http://i.imgur.com/YA6jx3J.png";
   video = "https://fbcdn-video-a.akamaihd.net/hvideo-ak-ash3/v/867980_10151488114683049_22347748_n.mp4?oh=99665a09b75b87cbb01f31f876cbc271&oe=525CDD19&__gda__=1381868364_e8b8abeb0360870b1fd0017848abe658";
   status = "he's so nice";
 
@@ -31,8 +30,6 @@ function show(type, color, arg) {
     } else if (type == "Video") {
       document.write("<br>");
       show_video(arg);
-    } else if (type == "Link") {
-      show_status(arg);
     } else {
       console.log("wrong type");
     }
@@ -55,16 +52,6 @@ function show_status(status) {
     var newP = document.createElement("p");
     var text = document.createTextNode(status);
     newP.className = "status";
-    // img.width = "300px";
-    newP.appendChild(text);
-    // // This next line will just add it to the <body> tag
-    document.body.appendChild(newP);
-}
-
-function show_status(status) {
-    var newP = document.createElement("p");
-    var text = document.createTextNode(status);
-    newP.className = "link";
     // img.width = "300px";
     newP.appendChild(text);
     // // This next line will just add it to the <body> tag
