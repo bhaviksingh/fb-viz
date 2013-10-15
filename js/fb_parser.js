@@ -73,6 +73,12 @@
 
       if (!isValidDate(start_date) || !isValidDate(end_date)){ 
         console.log("ERROR: INVALID DATE" + start_date + " " + end_date);
+        return;
+      }
+
+      if  (new fb_date(start_date).unix_date() < new fb_date(end_date).unix_date) {
+        console.log("ERROR: START DATE AFTER END DATE");
+        return;
       }
 
       var date_list = [];
@@ -98,6 +104,29 @@
       }
       date_list.push(end_date);
       return date_list;
+
+    }
+
+    this.date_boundaries = function(date_list) {
+      var lowest_unix = 999999999999999999999999999999999999999999999999;
+      var highest_unix = 0;
+      var lowest_date = 0;
+      var highest_date = 0;
+
+      for (var i=0; i<date_list.length; i++) {
+        var current = new fb_date(date_list[i]);
+        if (current.unix_date() < lowest_unix){
+          lowest_unix = current.unix_date();
+          lowest_date = date_list[i];
+          continue;
+        } else if (current.unix_date() > highest_unix) {
+          highest_unix = current.unix_date();
+          highest_date = date_list[i];
+        }
+
+      }
+
+      return [lowest_date, highest_date];
 
     }
 
@@ -187,8 +216,8 @@
       
       if (type_counter == types.length) {
         console.log("Finished all!")
-        console.log(all_info);
-        finished_callback();
+        var boundaries = first_date.date_boundaries(Object.keys(all_info));
+        finished_callback(boundaries[0], boundaries[1]);
         return;
       } else {
         getAll();
