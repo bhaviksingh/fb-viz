@@ -199,13 +199,13 @@ function re_render(jsonObject) {
 }
 
 function update(ty, arg) {
-  if ty == "Status" {
+  if (ty == "Status") {
     update_status(arg);
-  } else if ty == "Photo" {
+  } else if (ty == "Photo") {
     update_photo(arg);
-  } else if ty == "Video" {
+  } else if (ty == "Video") {
     update_video(arg); 
-  } else if ty == "Link" {
+  } else if (ty == "Link") {
     update_link(arg);
   }
 }
@@ -330,6 +330,54 @@ function render_svg(csvFile) {
 
   });
 }
+
+var dataset = {
+  "january 2010": {
+    "status": [
+      {
+        "data":"he is so cute",
+        "likes":["stephanie"],
+        "comments":[]
+      },
+      {
+        "data":"she sucks",
+        "likes":["bah", "boo"],
+        "comments":['stephanie']
+      }
+    ],
+    "photos": [
+    ]
+}
+}
+
+
+function getMostPopular(type, JsonSubset) {
+  var popObject = 0;
+  var pops = 0;
+  var popLikes = 0;
+  var popComments = 0;
+  for (var time in JsonSubset) {
+    var timeSubset = JsonSubset[time];
+    var typeData = timeSubset[type];
+    
+    for (var i in typeData) {
+      var typeObject = typeData[i];
+      var object = typeObject.data;
+      var popularity = typeObject.likes.length + typeObject.comments.length;
+      if ((pops < popularity) || (pops == 0)) {
+        pops = popularity;
+        popObject = object;
+        popComments = typeObject.comments.length;
+        popLikes = typeObject.likes.length;
+      }
+    }
+    
+  };
+  return popObject;
+}
+
+console.log(getMostPopular("status", dataset));
+
 </script>
 
 
