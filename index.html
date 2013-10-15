@@ -124,6 +124,8 @@
 
       function slider_callback(a,b) {
         var jsonObject = getData(a,b);
+        console.log("SLIDER CHANGED, UPDATING RENDER");
+        console.log(jsonObject);
         re_render_svg(jsonObject, 10, 20);
       }
 

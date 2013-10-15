@@ -54,10 +54,10 @@ function render_svg(jsonObject, max_likes, max_comments) {
     var jsonArray = [];
     var ids = [];
     for (var i in jsonObject) {
-      console.log(i);
+      //console.log(i);
       var monthData = jsonObject[i];
       for (var j in monthData) {
-        console.log(j);
+        //console.log(j);
         var typeData = monthData[j];
         var t = ts[j];
         
@@ -90,13 +90,12 @@ function render_svg(jsonObject, max_likes, max_comments) {
           if(likes != -1) {
             var txt = "{'" + t + "' : { 'likes': " + likes + ", 'comments': " + comments + '}}';
             var obj = eval ("(" + txt + ")");
-            console.log(obj);
+            //console.log(obj);
             jsonArray.push(obj);  
           };
         };
         
       };
-      console.log(jsonArray);
       return jsonArray;
     };
   };
