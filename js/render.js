@@ -151,10 +151,9 @@ function render_svg(jsonObject, max_likes, max_comments) {
         d3.selectAll("circle").style("opacity", 0.2)
         d3.selectAll("."+d.toLowerCase()).style("opacity", 0.8);
         current.style("opacity", 0.8);
-        console.log("mousing" + d.toLowerCase());
       })
       .on("mouseout", function(d) {
-        d3.selectAll("rect").style("opacity", 0.8);
+        d3.selectAll("circle").style("opacity", 0.8);
       })
       .style("fill", colorSteph);
 
