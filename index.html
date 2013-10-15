@@ -10,6 +10,8 @@
 	<link rel="stylesheet" type="text/css" href="css/reset.css"/>
   <link rel="stylesheet" type="text/css" href="css/style.css"/>
 	<script src="js/jq.js"> </script>
+  <script src="js/fb_parser.js"></script>
+
 </head>
 
 <body>
@@ -33,7 +35,7 @@
     function fb_login(){
       FB.login(function(response) { 
         //Do nothing dealt with later
-       }, {scope: 'email,user_likes,user_videos,user_photos,user_status,user_friends,user_activities'})
+       }, {scope: 'email,user_likes,user_videos,user_photos,user_status,user_friends,user_activities,read_stream'})
     }
 
     $("#fb_login_button").click(fb_login);
@@ -67,71 +69,6 @@
   }(document));
 
 
-  /* OUR CODE */
-
-  //Date class for objects
-  fb_date = function(str_date, unix) {
-    
-    var string_date = str_date;
-    var string_month;
-    var string_year;
-    var computer_date;
-    var unix_date;
-
-    var MONTH = ["JAN", "FEB", "MAR", "APR", "MAY", "JUN", "JUL", "AUG", "SEP", "OCT", "NOV", "DEC"];
-    var YEARS = ["2008","2009","2010","2011","2012","2013"];
-
-    function toTitleCase(str)
-    {
-        return str.replace(/\w\S*/g, function(txt){return txt.charAt(0).toUpperCase() + txt.substr(1).toLowerCase();});
-    }
-
-    function initialize() {
-
-      if (typeof(unix) !== "undefined" && unix) {
-      
-        computer_date = new Date(str_date);
-        unix_date = computer_date.getTime() * 1000;
-        string_month = MONTH[computer_date.getMonth()];
-        string_year = computer_date.getFullYear();
-        string_date = string_month + " " + string_year;
-
-      } else {
-
-          str_split = str_date.split(" ");
-          if (MONTH.indexOf(str_split[0].trim()) < 0 || YEARS.indexOf(str_split[1].trim()) < 0) {
-            console.log("ERROR: Invalid date - " + str_date);
-            computer_date = null;
-            unix_date = null;
-          } else {
-            string_month = str_split[0].trim();
-            string_year = str_split[1].trim();
-            computer_date = new Date(string_year, MONTH.indexOf(string_month), 1);
-            unix_date = computer_date.getTime() / 1000;
-          }
-      }
-    
-    }
-
-    this.string_date = function() {
-      return string_date;
-    } 
-
-    this.computer_date = function(){
-      return computer_date;
-    }
-
-    this.unix_date = function() {
-      return unix_date;
-    }
-
-    initialize();
-
-  }
-
-  var DEFAULT_TIMESTAMP = "1262325600"; //1st jan 2010
-  var user = {};
-
   /* DEBUG FUNCTIONS */
   //Just call to see what the FB api returns for something
   function checkAPI(str) {
@@ -147,126 +84,6 @@
   }
 
 
-  /* GET FUNCTIONS */
-
-  function getDateFromRequest(req) {
-    var index = req.indexOf("until");
-    if (index < 0) {
-      index = req.indexOf("since");
-      if (index < 0) {
-        return -1;
-      }
-    }
-    return parseInt(req.substring(index, index + 30).split("&")[0].split("=")[1]);
-  }
-
-  //Called by caller, given to callback function
-  function getFromAPI(str, receiver, forward, start_unix, end_unix){
-    console.log(str);
-    console.log(getDateFromRequest(str));
-    FB.api(str, function(d) {
-      receiver(d, forward, start_unix, end_unix);
-    })
-  }
-
-  //Generic data receiver
-  var data_list;
-  var forward_done;
-  var reverse_done;
-
-  function finish(forward) {
-    if (forward) {
-      forward_done = true;
-    } else {
-      reverse_done = true;
-    }
-  }
-
-  function dataReceiver(x, forward, start_unix, end_unix){
-
-    if (x.error) {
-      console.log("STOPPING: Error - " + x.error);
-      finish(forward);
-      return;
-    }
-    if (x === "undefined" || x.data.length == 0) {
-      console.log("finished cuz empty " + forward);
-      finish(forward);
-      return;
-    }
-
-    for (var i=0; i< x.data.length; i++){
-      data_list.push(x.data[i]);
-    }
-
-    if (x.paging) {
-
-      if (forward) {
-        var date_from_req = getDateFromRequest(x.paging.next);
-        console.log("FORWARD DATE IS " + date_from_req + " " + start_unix + " " + end_unix);
-        if ( date_from_req > end_unix  || date_from_req < start_unix) { finish(forward); return; }
-        getFromAPI(x.paging.next, dataReceiver, forward, start_unix, end_unix);             
-      } else {
-        var date_from_req = getDateFromRequest(x.paging.previous);
-        console.log("REVERSE DATE IS " + date_from_req + " " + start_unix + " " + end_unix);
-        if (date_from_req > end_unix  || date_from_req < start_unix) {finish(forward); return; }
-        getFromAPI(x.paging.previous, dataReceiver, forward, start_unix, end_unix);  
-      }
-        
-    } else {
-      finish(forward);
-    }
-  }
-
-  var big_data = {}
-
-  function whenDoneParseData(type) {
-    if (forward_done && reverse_done) {
-
-      var date_to_post;
-
-      if (type in big_data) {
-        date_to_post = big_data[type];
-      } else {
-        date_to_post = {}
-        big_data[type] = date_to_post;
-      }
-
-      console.log("PARSE THE DATA");
-      console.log(data_list);
-
-      for (var i =0 ; i < data_list.length; i++) {
-        var post = data_list[i];
-        var date_for_post = new fb_date(post.updated_time,true);
-        var date_key = date_for_post.string_date();
-
-        if (date_key in date_to_post) {
-          date_to_post[date_key].count = date_to_post[date_key].count + 1;
-          date_to_post[date_key].data.push(post);
-        } else {
-          date_to_post[date_key] = {"count": 1, "data": [post]};
-        }
-      }
-
-      console.log(date_to_post);
-      return true;
-
-    } else {
-      console.log(".." + forward_done + " " + reverse_done);
-      setTimeout(function(){ whenDoneParseData(type) }, 1000);
-    }
-  }
-
-  function getBetweenRange(type,start_range, end_range) {
-    var start_date = new fb_date(start_range);
-    var end_date = new fb_date(end_range); 
-    data_list = []; forward_done = false; reverse_done = false;
-    getFromAPI("/me/" + type + "?since=" + start_date.unix_date() + "&until=" + end_date.unix_date() , dataReceiver, true, start_date.unix_date(), end_date.unix_date());
-    getFromAPI("/me/" + type + "?since=" + start_date.unix_date() + "&until=" + end_date.unix_date() , dataReceiver, false, start_date.unix_date(), end_date.unix_date());
-    whenDoneParseData(type);
-  }
-
-  
   // Basic information about the Users ID and stuff
   function initialize() {
       console.log('Welcome!  Fetching your information.... ');
@@ -294,11 +111,11 @@
 
         $("#basic-info #name").html(response.name);
         $("#basic-info #gender").html("You are a " + gender);
+
+        console.log("Getting all data");
+        getAll();
       });
   }
-
- 
-
 
 
   </script>
