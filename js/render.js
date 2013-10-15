@@ -125,7 +125,43 @@ function render_svg(jsonObject, max_likes, max_comments) {
       .transition()
       .duration(800)
       .attr("r", function (d) { return 5; })
+      .style("opacity", 0.7)
+      .attr("class", function(d) {return first(d); })
       .style("fill", function(d) { return colors[first(d)]} );
 
   d3.selectAll(".loading").remove();   
+  var svg_new = d3.select("svg");
+  var colorSteph = d3.scale.ordinal().range(["#6363FF", "#63FFCB", "#FF7363"]);
+  
+  var colorS = ["#6363FF", "#63FFCB", "#FF7363"];
+  
+  var legend = svg_new.selectAll(".legend")
+      .data(["Status", "Photo", "Video"])
+      .enter().append("g")
+      .attr("class", "legend")
+      .attr("transform", function(d, i) { return "translate(0," + i * 20 + ")"; });
+  
+  legend.append("circle")
+      .attr("cx", 5)
+      .attr("cy", 20)
+      .attr("r", 5)
+      .style("opacity", 0.8)     
+      .on("mouseover", function(d) {
+        current = d3.select(this);
+        d3.selectAll("circle").style("opacity", 0.2)
+        d3.selectAll("."+d.toLowerCase()).style("opacity", 0.8);
+        current.style("opacity", 0.8);
+        console.log("mousing" + d.toLowerCase());
+      })
+      .on("mouseout", function(d) {
+        d3.selectAll("rect").style("opacity", 0.8);
+      })
+      .style("fill", colorSteph);
+
+  legend.append("text")
+      .attr("x", 45)
+      .attr("y", 20)
+      .attr("dy", ".35em")
+      .style("text-anchor", "end")
+      .text(function(d) { return d; });
 }
