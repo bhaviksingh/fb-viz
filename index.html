@@ -118,7 +118,7 @@
         var jsonObject = getData(a,b);
         console.log("SLIDER CHANGED, UPDATING RENDER");
         console.log(jsonObject);
-        re_render_svg(jsonObject, 10, 20);
+        re_render_svg(jsonObject);
       }
 
       function data_callback(left_boundary, right_boundary) {
@@ -137,7 +137,7 @@
         }
 
         var jsonObject = getData(default_start, default_end);
-        render_svg(jsonObject, 10, 20);
+        render_svg(jsonObject);
         show_populars(jsonObject);
         
       }

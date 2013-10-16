@@ -1,5 +1,6 @@
-function render_svg(jsonObject, max_likes, max_comments) {
-
+function render_svg(jsonObject) {
+  var max_likes = 0;
+  var max_comments = 0;
   var colors = {"status": "#6363FF", "photo" : "#63FFCB", "video": "#FF7363"};
 
   var w = 900,
@@ -17,6 +18,84 @@ function render_svg(jsonObject, max_likes, max_comments) {
       .text("Loading ...")
       .attr("x", function () { return w/2; })
       .attr("y", function () { return h/2-5; });
+
+  function translate(jsonObject) {
+    var ts = {"statuses": "status", "photos": "photo", "videos": "video"};
+    var jsonArray = [];
+    var ids = [];
+
+    for (var i in jsonObject) {
+      var monthData = jsonObject[i];
+      for (var j in monthData) {
+        var typeData = monthData[j];
+        var t = ts[j];
+        
+        for (var m in typeData) {
+          var likes = -1;
+          var comments = -1;
+          var info = typeData[m];
+          if (info.id) {
+            if(!isIn(info.id, ids)) {
+              ids.push(info.id);
+            } else {
+              continue;
+            };
+          };
+
+          if (info.likes) {
+            if (info.likes.data) {
+              likes = info.likes.data.length;
+              if(likes > max_likes) {
+                max_likes = likes;
+              };
+              comments = 0;
+            };
+          };
+          if (info.comments) {
+            if (info.comments.data) {
+              comments = info.comments.data.length;
+              if(comments > max_comments) {
+                max_comments = comments;
+              };
+              if(likes == -1) {
+                likes = 0;
+              };             
+            };
+          };
+
+          if(likes != -1) {
+            var txt = "{'" + t + "' : { 'likes': " + likes + ", 'comments': " + comments + '}}';
+            var obj = eval ("(" + txt + ")");
+            jsonArray.push(obj);  
+          };
+        };
+        
+      };
+      
+    };
+    console.log(jsonArray);
+    return jsonArray;
+  };
+
+  function roundToFive(n) {
+    if (n%5 == 0) {
+      return n;
+    } else {
+      return roundToFive(n+=1);
+    }
+  };
+
+  // circles 
+
+  function first(obj) {
+    for (var a in obj) return a;
+  }
+  
+  jsonArray = translate(jsonObject);
+  console.log(max_comments);
+  console.log(max_likes);
+  max_likes = roundToFive(max_likes);
+  max_comments = roundToFive(max_comments);
 
   // axis
   var x = d3.scale.linear().domain([0, max_likes]).range([left_pad, w-pad]);
@@ -48,65 +127,6 @@ function render_svg(jsonObject, max_likes, max_comments) {
     if (arrValues.indexOf(wd) > -1) {return true;}
     else {return false;}
   };
-
-  function translate(jsonObject) {
-    var ts = {"statuses": "status", "photos": "photo", "videos": "video"};
-    var jsonArray = [];
-    var ids = [];
-
-    for (var i in jsonObject) {
-      var monthData = jsonObject[i];
-      for (var j in monthData) {
-        var typeData = monthData[j];
-        var t = ts[j];
-        
-        for (var m in typeData) {
-          var likes = -1;
-          var comments = -1;
-          var info = typeData[m];
-          if (info.id) {
-            if(!isIn(info.id, ids)) {
-              ids.push(info.id);
-            } else {
-              continue;
-            };
-          };
-          if (info.likes) {
-            if (info.likes.data) {
-              likes = info.likes.data.length;
-              comments = 0;
-            };
-          };
-          if (info.comments) {
-            if (info.comments.data) {
-              comments = info.comments.data.length;
-              if(likes == -1) {
-                likes = 0;
-              };             
-            };
-          };
-
-          if(likes != -1) {
-            var txt = "{'" + t + "' : { 'likes': " + likes + ", 'comments': " + comments + '}}';
-            var obj = eval ("(" + txt + ")");
-            jsonArray.push(obj);  
-          };
-        };
-        
-      };
-      
-    };
-    console.log(jsonArray);
-    return jsonArray;
-  };
-
-  // circles 
-
-  function first(obj) {
-    for (var a in obj) return a;
-  }
-
-  jsonArray = translate(jsonObject);
   
   svg.selectAll("circle")
       .data(jsonArray)
@@ -156,6 +176,9 @@ function render_svg(jsonObject, max_likes, max_comments) {
       .attr("dy", ".35em")
       .style("text-anchor", "end")
       .text(function(d) { return d; });
+
+  max_comments = 0;
+  max_likes =0;
 }
 
 function re_render(jsonObject) {
@@ -167,8 +190,8 @@ function re_render(jsonObject) {
   };
 }
 
-function re_render_svg(jsonObject, max_likes, max_comments) {
+function re_render_svg(jsonObject) {
   d3.select("svg").remove();
   re_render(jsonObject);
-  render_svg(jsonObject, max_likes, max_comments);
+  render_svg(jsonObject);
 }
