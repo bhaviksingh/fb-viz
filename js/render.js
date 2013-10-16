@@ -2,6 +2,8 @@ function render_svg(jsonObject) {
   var max_likes = 0;
   var max_comments = 0;
   var colors = {"status": "#6363FF", "photo" : "#63FFCB", "video": "#FF7363"};
+  var mapSteph = {"statuses":"message", "videos":"source", "photos":"source"};
+  
 
   var w = 900,
   h = 450,
@@ -62,11 +64,15 @@ function render_svg(jsonObject) {
               };             
             };
           };
+          var obj = info[mapSteph[j]];
 
           if(likes != -1) {
-            var txt = "{'" + t + "' : { 'likes': " + likes + ", 'comments': " + comments + '}}';
-            var obj = eval ("(" + txt + ")");
-            jsonArray.push(obj);  
+            var v = {};
+            v[t] = {};
+            v[t].obj = obj;
+            v[t].likes = likes;
+            v[t].comments = comments;
+            jsonArray.push(v);  
           };
         };
         
@@ -127,7 +133,16 @@ function render_svg(jsonObject) {
     if (arrValues.indexOf(wd) > -1) {return true;}
     else {return false;}
   };
-  
+
+  var tip = d3.tip()
+    .attr('class', 'd3-tip')
+    .offset([-10, 0])
+    .html(function(d) {
+      return "<span>" + d[first(d)]["obj"] + "</span>";
+    });
+
+  svg.call(tip);
+
   svg.selectAll("circle")
       .data(jsonArray)
       .enter()
@@ -138,9 +153,18 @@ function render_svg(jsonObject) {
       .attr("r", function (d) { return 5; })
       .style("opacity", 0.7)
       .attr("class", function(d) {return first(d); })
-      .style("fill", function(d) { return colors[first(d)]} );
+      .style("fill", function(d) { return colors[first(d)]} )
+      .on("mouseover", tip.show)
+      .on("mouseout", tip.hide);
 
   d3.selectAll(".loading").remove(); 
+
+  svg.append("text")      // text label for the x axis
+        .attr("x", w/2 )
+        .attr("y",  h )
+        .style("text-anchor", "middle")
+        .text("Likes");
+
   var svg_new = d3.select("#legend_div")
           .append("svg")
           .attr("width", w)
@@ -156,7 +180,6 @@ function render_svg(jsonObject) {
       .enter().append("g")
       .attr("class", "legend")
       .attr("transform", function(d, i) { return "translate(0," + i * 20 + ")"; });
-  
   legend.append("circle")
       .attr("cx", 5)
       .attr("cy", 20)
