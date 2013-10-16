@@ -148,7 +148,9 @@ function render_svg(jsonObject) {
     .attr('class', 'd3-tip')
     .offset([-10, 0])
     .html(function(d) {
+      console.log(d);
       var type = first(d);
+      console.log(type)
       if (type == "status") {
         return "<span>" + d[first(d)]["obj"] + "</span>";
       } else if (type == "photo"){
@@ -158,7 +160,7 @@ function render_svg(jsonObject) {
       }
     });
 
-  svg.call(tip);
+  svg.append("tip_holder").call(tip);
 
   svg.selectAll("circle")
       .data(jsonArray)
@@ -172,7 +174,7 @@ function render_svg(jsonObject) {
       .attr("class", function(d) {return first(d); })
       .style("fill", function(d) { return colors[first(d)]} )
       .on("mouseover", tip.show)
-      .on("mouseout", function(event) { console.log(event); if($(! $(event.target).hasClass("d3-tip")) { tip.hidel } });
+      .on("mouseout", tip.hide);
 
   d3.selectAll(".loading").remove(); 
 

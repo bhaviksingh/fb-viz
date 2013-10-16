@@ -19,15 +19,12 @@
   <script src="js/show.js"></script> 
   <script src="js/render.js"></script>
   <script src="http://code.jquery.com/ui/1.10.3/jquery-ui.js"></script>
-  <script src="http://labratrevenge.com/d3-tip/javascripts/d3.tip.min.js"></script>
-
+  <script src="js/d3.tip.js"></script>
 </head>
 
 <body>
   <div id="fb-root"></div>
-  <div class="fb-login"> 
-    <div id="fb_login_button"> Login with Facebook </div>
-  </div>
+
 
   <script>
 
@@ -51,7 +48,7 @@
 
     FB.Event.subscribe('auth.authResponseChange', function(response) {
 
-      $("#fb_login_button").hide();
+      $("#login_box").hide();
 
       // Here we specify what we do with the response anytime this event occurs. 
       if (response.status === 'connected') {
@@ -109,7 +106,7 @@
         //Get basic information
         user.name = response.name;
         user.gender = response.gender;
-     
+        $("#wait_name").html(response.name);
         $("#basic-info #name").html(response.name);
       });
 
@@ -149,9 +146,18 @@
 
   </script>
 
-  <div id="wait">
-    <div class="message title"> Please wait, gathering data </div>
-  </div>
+    <div id="wait" class="cover">
+      <div class="message">  <span class="title"> Hey there, <span id="wait_name"> </span>  </span> </br> </br> Give us a minute to grab your secret private information </div>
+    </div>
+
+
+    <div id="login_box" class="cover">
+      <div class="fb-login message"> 
+        <div id="fb_login_button" class="time title"> Login with Facebook </div>
+        <div> </br>  Don't worry, none of your data will be stored anywhere. </div>
+      </div>
+    </div>
+
 
     <div class="container">
        <div id="slider">
@@ -162,7 +168,7 @@
       </div>
 
       <div id="basic-info" >
-        <div class="message title"> <span id="name"> </span>'s most popular posts from <span id="slider_amount" class="time"> </span> </div>
+        <div class="message title"> <span id="name"> </span>'s posts from <span id="slider_amount" class="time"> </span> </div>
         <div id="legend_div">
 
         </div>
@@ -172,7 +178,7 @@
       </div>
 
       <div id="most_popular">
-        <div class="title"> Most popular </div>
+        <div class="title left"> The most popular: </div>
       </div>
     </div>
     
