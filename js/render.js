@@ -118,14 +118,24 @@ function render_svg(jsonObject) {
       .ticks(5);
 
   svg.append("g")
-  .attr("class", "axis")
-  .attr("transform", "translate(0, "+(h-pad)+")")
-  .call(xAxis);
+    .attr("class", "axis")
+    .attr("transform", "translate(0, "+(h-pad)+")")
+    .call(xAxis)
+    .append("text")
+    .attr("y", -10)
+    .attr("x", w-45)
+    .text("Likes");
 
   svg.append("g")
       .attr("class", "axis")
       .attr("transform", "translate("+(left_pad-pad)+", 0)")
-      .call(yAxis);
+      .call(yAxis)
+      .append("text")
+      .attr("transform", "rotate(-90)")
+      .attr("y", 6)
+      .attr("dy", ".71em")
+      .style("text-anchor", "end")
+      .text("Comments");
 
   //y = d3.scale.linear().domain([0, max_comments]).range([pad, h-pad*2]);
 
@@ -159,11 +169,7 @@ function render_svg(jsonObject) {
 
   d3.selectAll(".loading").remove(); 
 
-  svg.append("text")      // text label for the x axis
-        .attr("x", w/2 )
-        .attr("y",  h )
-        .style("text-anchor", "middle")
-        .text("Likes");
+
 
   var svg_new = d3.select("#legend_div")
           .append("svg")
