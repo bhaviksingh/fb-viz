@@ -195,6 +195,7 @@ function re_render(jsonObject) {
 
 function re_render_svg(jsonObject) {
   d3.select("svg").remove();
+  d3.select("svg").remove();
   re_render(jsonObject);
   render_svg(jsonObject);
 }
