@@ -5,6 +5,9 @@ var startSlider = function(start, end, default_start, default_end, slider_callba
 
 	var valMap = temp_date.get_dates(start, end);
 	var start_value = valMap.indexOf(default_start);
+	if(start_value < 0) {
+		start_value = 0;
+	};
 	var end_value = valMap.indexOf(default_end);
 
 	function showLabel(event,ui){
