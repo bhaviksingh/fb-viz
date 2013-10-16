@@ -24,7 +24,7 @@ function show_populars(JsonSet) {
 
 function show(type, color, arg) {
     var encase = document.createElement("div");
-    $(encase).addClas('popular');
+    $(encase).addClass('popular');
     var title_div = add_title(type, color);
     $(encase).append(title_div);
 

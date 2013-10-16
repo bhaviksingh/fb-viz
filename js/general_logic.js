@@ -21,10 +21,10 @@ function getMostPopular(type, JsonSubset) {
       var object = typeObject[data];
       var popularity = 0;
       if (typeObject.likes) {
-        popularity += typeObject.likes.data.length; 
+        popularity += typeObject.likes.summary.total_count; 
       }; 
       if (typeObject.comments) {
-        popularity += typeObject.comments.data.length;
+        popularity += typeObject.comments.summary.total_count;
       };
       if ((pops < popularity) || (pops == 0)) {
         pops = popularity;

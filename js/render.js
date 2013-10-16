@@ -43,8 +43,8 @@ function render_svg(jsonObject) {
           };
 
           if (info.likes) {
-            if (info.likes.data) {
-              likes = info.likes.data.length;
+            if (info.likes) {
+              likes = info.likes.summary.total_count;
               if(likes > max_likes) {
                 max_likes = likes;
               };
@@ -52,8 +52,8 @@ function render_svg(jsonObject) {
             };
           };
           if (info.comments) {
-            if (info.comments.data) {
-              comments = info.comments.data.length;
+            if (info.comments) {
+              comments = info.comments.summary.total_count;
               if(comments > max_comments) {
                 max_comments = comments;
               };
@@ -135,8 +135,6 @@ function render_svg(jsonObject) {
       .attr("class", "circle")
       .attr("cx", function (d) { return x(d[first(d)]["likes"]); })
       .attr("cy", function (d) { return y(d[first(d)]["comments"]); }) 
-      .transition()
-      .duration(800)
       .attr("r", function (d) { return 5; })
       .style("opacity", 0.7)
       .attr("class", function(d) {return first(d); })
