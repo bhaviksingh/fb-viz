@@ -176,14 +176,14 @@ cursor: pointer;
 #slider-range .ui-slider-handle {
 	height: 30px;
 	top: 0px;
-	background: rgba(24, 144, 255,0.4);
+	background: rgba(24, 144, 255,0.6);
 	border: none;
 	outline:none;
 	cursor:pointer;
 }
 
 .ui-slider-horizontal .ui-slider-range {
-	background: rgba(24, 144, 255,0.1);
+	background: rgba(24, 144, 255,0.2);
 }
 
 .ui-slider-labels {
