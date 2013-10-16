@@ -18,22 +18,29 @@ function show_populars(JsonSet) {
   var i = 0;
   for (var i =0; i<typesSteph.length; i+=1) {
     var t = typesSteph[i];
-    show(t, colors[i], args[i]);
+    $("#most_popular").append(show(t, colors[i], args[i]));
   }
 }
 
 function show(type, color, arg) {
-    add_title(type, color);
+    var encase = document.createElement("div");
+    $(encase).addClas('popular');
+    var title_div = add_title(type, color);
+    $(encase).append(title_div);
+
+    var content_div;
     if (type == "Status") {
-      show_status(arg);
+      content_div = show_status(arg);
     } else if (type == "Photo") {
-      show_photo(arg);
+      content_div = show_photo(arg);
     } else if (type == "Video") {
       document.write("<br>");
-      show_video(arg);
+      content_div = show_video(arg);
     } else {
       console.log("wrong type");
     }
+    $(encase).append(content_div);
+    return encase;
 } 
 
 function add_title(title, color) {
@@ -45,8 +52,8 @@ function add_title(title, color) {
     };
     newDiv.id = title;
     newDiv.appendChild(document.createTextNode(title));
-    document.body.appendChild(newDiv);
     d3.select("#"+title).style("color", color);
+    return newDiv;
 }
 
 function show_status(status) {
@@ -56,7 +63,7 @@ function show_status(status) {
     // img.width = "300px";
     newP.appendChild(text);
     // // This next line will just add it to the <body> tag
-    document.body.appendChild(newP);
+    return newP;
 }
 
 function show_photo(link) {
@@ -66,7 +73,7 @@ function show_photo(link) {
     newDiv.className = "photo";
     newDiv.appendChild(img);
     // // This next line will just add it to the <body> tag
-    document.body.appendChild(newDiv);
+    return newDiv;
 }
 
 function show_video(link) {
@@ -82,5 +89,5 @@ function show_video(link) {
 
     video.appendChild(source);
     newDiv.appendChild(video);
-    document.body.appendChild(newDiv);
+    return newDiv;
 }

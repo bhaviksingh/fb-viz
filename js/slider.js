@@ -44,7 +44,12 @@ var startSlider = function(start, end, default_start, default_end, slider_callba
 
 	var increment = 100 / valMap.length;
 	for (var i=0; i< valMap.length; i++) {
-		var html = "<div class=\"ui-slider-label-ticks\" style=\"left:" + i*increment + "%\">" + valMap[i].split(" ")[0].substring(0,1) +  "</div>";
+		if (valMap[i].split(" ")[0] == "JAN"){
+			var tick = valMap[i].split(" ")[1];
+		} else{
+			var tick = "";
+		}
+		var html = "<div class=\"ui-slider-label-ticks\" style=\"left:" + i*increment + "%\">" + tick +  "</div>";
 		$("#slider-ticks").append(html);
 	}
 

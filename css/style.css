@@ -13,6 +13,11 @@ body{
 	position: fixed;
 }
 
+.container {
+	margin: 0 auto;
+	width: 960px;
+}
+
 #wait .message {
 	width: 200px;
 	margin: 0 auto;

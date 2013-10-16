@@ -159,7 +159,14 @@
       finished_callback = callback;
     }
 
-    var req = "/me/" + types[type_counter] + "?since=" + first_date.unix_date();
+    var req;
+
+    if (types[type_counter] == "statuses") {
+      req = "/me/" + types[type_counter] + "?since=" + first_date.unix_date() + "&fields=message,comments.limit(1).summary(true),likes.limit(1).summary(true)";
+    } else {
+      req = "/me/" + types[type_counter] + "?since=" + first_date.unix_date() + "&fields=source,comments.limit(1).summary(true),likes.limit(1).summary(true)"
+    }
+
     console.log("Starting to get: " + req)
     getNext(req);
   }
@@ -182,6 +189,12 @@
   function dataReceiver(response) {
     // console.log("Received response with " + response.data);
     //console.log(response);
+
+    if (response.error) {
+      console.log("ERROR: Incorrect request to api, given response" + response.error.message);
+      return;
+    }
+
     for (var i=0; i< response.data.length; i++){
       //data_list.push(response.data[i]);
       //Check post time

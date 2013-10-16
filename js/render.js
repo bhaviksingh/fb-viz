@@ -2,8 +2,8 @@ function render_svg(jsonObject, max_likes, max_comments) {
 
   var colors = {"status": "#6363FF", "photo" : "#63FFCB", "video": "#FF7363"};
 
-  var w = 700,
-  h = 300,
+  var w = 900,
+  h = 450,
   pad = 20,
   left_pad = 100
 
