@@ -2,11 +2,13 @@ function render_svg(jsonObject) {
   var max_likes = 0;
   var max_comments = 0;
   var colors = {"status": "#6363FF", "photo" : "#63FFCB", "video": "#FF7363"};
+  var mapSteph = {"statuses":"message", "videos":"source", "photos":"source"};
+  
 
   var w = 960,
   h = 480,
   pad = 20,
-  left_pad = 100
+  left_pad = 50;
 
   var svg = d3.select("#punchcard")
           .append("svg")
@@ -62,11 +64,15 @@ function render_svg(jsonObject) {
               };             
             };
           };
+          var obj = info[mapSteph[j]];
 
           if(likes != -1) {
-            var txt = "{'" + t + "' : { 'likes': " + likes + ", 'comments': " + comments + '}}';
-            var obj = eval ("(" + txt + ")");
-            jsonArray.push(obj);  
+            var v = {};
+            v[t] = {};
+            v[t].obj = obj;
+            v[t].likes = likes;
+            v[t].comments = comments;
+            jsonArray.push(v);  
           };
         };
         
@@ -127,7 +133,23 @@ function render_svg(jsonObject) {
     if (arrValues.indexOf(wd) > -1) {return true;}
     else {return false;}
   };
-  
+
+  var tip = d3.tip()
+    .attr('class', 'd3-tip')
+    .offset([-10, 0])
+    .html(function(d) {
+      var type = first(d);
+      if (type == "status") {
+        return "<span>" + d[first(d)]["obj"] + "</span>";
+      } else if (type == "photo"){
+        return "<span> <img src=\"" + d[first(d)]["obj"] + "\" /> </span>";
+      } else {
+        return "<span> <video src=\"" + d[first(d)]["obj"] + "\" /> </span>";
+      }
+    });
+
+  svg.call(tip);
+
   svg.selectAll("circle")
       .data(jsonArray)
       .enter()
@@ -138,10 +160,24 @@ function render_svg(jsonObject) {
       .attr("r", function (d) { return 5; })
       .style("opacity", 0.7)
       .attr("class", function(d) {return first(d); })
-      .style("fill", function(d) { return colors[first(d)]} );
+      .style("fill", function(d) { return colors[first(d)]} )
+      .on("mouseover", tip.show)
+      .on("mouseout", function(event) { console.log(event); if($(! $(event.target).hasClass("d3-tip")) { tip.hidel } });
 
-  d3.selectAll(".loading").remove();   
-  var svg_new = d3.select("svg");
+  d3.selectAll(".loading").remove(); 
+
+  svg.append("text")      // text label for the x axis
+        .attr("x", w/2 )
+        .attr("y",  h )
+        .style("text-anchor", "middle")
+        .text("Likes");
+
+  var svg_new = d3.select("#legend_div")
+          .append("svg")
+          .attr("width", 300)
+          .attr("height", 100);
+
+  // var legend_div = d3.select("#legend_div");
   var colorSteph = d3.scale.ordinal().range(["#6363FF", "#63FFCB", "#FF7363"]);
   
   var colorS = ["#6363FF", "#63FFCB", "#FF7363"];
@@ -150,8 +186,8 @@ function render_svg(jsonObject) {
       .data(["Status", "Photo", "Video"])
       .enter().append("g")
       .attr("class", "legend")
-      .attr("transform", function(d, i) { return "translate(0," + i * 20 + ")"; });
-  
+      .attr("transform", function(d, i) { return "translate(" + (i * 60) + ",0)";});
+
   legend.append("circle")
       .attr("cx", 5)
       .attr("cy", 20)
@@ -189,6 +225,7 @@ function re_render(jsonObject) {
 }
 
 function re_render_svg(jsonObject) {
+  d3.select("svg").remove();
   d3.select("svg").remove();
   re_render(jsonObject);
   render_svg(jsonObject);

@@ -4,7 +4,7 @@ function change_input() {
 }
 
 function getMostPopular(type, JsonSubset) {
-  var popObject = 0;
+  var popObject = "None to display";
   var pops = 0;
   var popLikes = 0;
   var popComments = 0;
