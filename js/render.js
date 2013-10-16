@@ -45,7 +45,7 @@ function render_svg(jsonObject) {
           };
 
           if (info.likes) {
-            if (info.likes) {
+            if (info.likes.summary) {
               likes = info.likes.summary.total_count;
               if(likes > max_likes) {
                 max_likes = likes;
@@ -54,7 +54,7 @@ function render_svg(jsonObject) {
             };
           };
           if (info.comments) {
-            if (info.comments) {
+            if (info.comments.summary) {
               comments = info.comments.summary.total_count;
               if(comments > max_comments) {
                 max_comments = comments;
