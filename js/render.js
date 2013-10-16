@@ -140,8 +140,13 @@ function render_svg(jsonObject) {
       .attr("class", function(d) {return first(d); })
       .style("fill", function(d) { return colors[first(d)]} );
 
-  d3.selectAll(".loading").remove();   
-  var svg_new = d3.select("svg");
+  d3.selectAll(".loading").remove(); 
+  var svg_new = d3.select("#legend_div")
+          .append("svg")
+          .attr("width", w)
+          .attr("height", 100);
+
+  // var legend_div = d3.select("#legend_div");
   var colorSteph = d3.scale.ordinal().range(["#6363FF", "#63FFCB", "#FF7363"]);
   
   var colorS = ["#6363FF", "#63FFCB", "#FF7363"];
