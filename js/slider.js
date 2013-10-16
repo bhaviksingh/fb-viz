@@ -10,9 +10,14 @@ var startSlider = function(start, end, default_start, default_end, slider_callba
 	function showLabel(event,ui){
 	  	var curValue = valMap[ui.value];
 	 	var target = ui.handle;                                     
-	    var tooltip = '<div class="tooltip"><div class="tooltip-inner">' + curValue + '</div><div class="tooltip-arrow"></div></div>';
+	    var tooltip = '<div class="tooltip"><div class="tooltip-inner">' + curValue.split(" ")[0] + '</div><div class="tooltip-arrow"></div></div>';
 	    $(target).html(tooltip);
 	};
+
+	function titleCase(str)
+	{
+	    return str.replace(/\w\S*/g, function(txt){return txt.charAt(0).toUpperCase() + txt.substr(1).toLowerCase();});
+	}
 
 	$("#slider-range").slider({
 		range: true,
@@ -25,7 +30,7 @@ var startSlider = function(start, end, default_start, default_end, slider_callba
 	    	var val_left = valMap[ui.values[0]];
 	    	var val_right = valMap[ui.values[1]];
 	    	
-	        $("#slider_amount").html("Viewing data between:" +  val_left + ' - ' + val_right);   
+	        $("#slider_amount").html(titleCase(val_left) + ' - ' + titleCase(val_right));   
 	        
 	        if (typeof(slider_callback) !== "undefined") {
 	        	slider_callback(val_left, val_right);
@@ -33,9 +38,9 @@ var startSlider = function(start, end, default_start, default_end, slider_callba
 
 	    }, create: function(event, ui) {
 	    	var handles = $("#slider-range .ui-slider-handle");
-	    	$(handles[0]).html('<div class="tooltip"><div class="tooltip-inner">' + valMap[start_value] + '</div><div class="tooltip-arrow"></div></div>');
-	    	$(handles[1]).html('<div class="tooltip"><div class="tooltip-inner">' + valMap[end_value] + '</div><div class="tooltip-arrow"></div></div>')
-	    	$("#slider_amount").html( valMap[start_value] + ' - ' + valMap[end_value]);   
+	    	$(handles[0]).html('<div class="tooltip"><div class="tooltip-inner">' + valMap[start_value].split(" ")[0] + '</div><div class="tooltip-arrow"></div></div>');
+	    	$(handles[1]).html('<div class="tooltip"><div class="tooltip-inner">' + valMap[end_value].split(" ")[0] + '</div><div class="tooltip-arrow"></div></div>')
+	    	$("#slider_amount").html( titleCase(valMap[start_value]) + ' - ' + titleCase(valMap[end_value]));   
 	    }
 	});
 

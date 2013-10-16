@@ -30,11 +30,13 @@ function show(type, color, arg) {
 
     var content_div;
     if (type == "Status") {
+      $(encase).addClass("status");
       content_div = show_status(arg);
     } else if (type == "Photo") {
+      $(encase).addClass("photo");
       content_div = show_photo(arg);
     } else if (type == "Video") {
-      document.write("<br>");
+      $(encase).addClass("video");
       content_div = show_video(arg);
     } else {
       console.log("wrong type");
@@ -45,21 +47,17 @@ function show(type, color, arg) {
 
 function add_title(title, color) {
     var newDiv = document.createElement("div");
-    if (title == "Video") {
-      newDiv.className = "title-video";
-    } else {
-      newDiv.className = "title";
-    };
-    newDiv.id = title;
+    newDiv.className = "title";
     newDiv.appendChild(document.createTextNode(title));
     d3.select("#"+title).style("color", color);
     return newDiv;
 }
 
 function show_status(status) {
-    var newP = document.createElement("p");
+    var newP = document.createElement("div");
     var text = document.createTextNode(status);
-    newP.className = "status";
+    newP.id = "popular_status";
+    newP.className = "popular_content";
     // img.width = "300px";
     newP.appendChild(text);
     // // This next line will just add it to the <body> tag
@@ -70,7 +68,8 @@ function show_photo(link) {
     var newDiv = document.createElement("div");
     var img = document.createElement("img");
     img.src = link;
-    newDiv.className = "photo";
+    img.id = "popular_img";
+    newDiv.className = "popular_content";
     newDiv.appendChild(img);
     // // This next line will just add it to the <body> tag
     return newDiv;
@@ -79,6 +78,7 @@ function show_photo(link) {
 function show_video(link) {
     var newDiv = document.createElement("div");
     newDiv.id = "video_holder";
+    newDiv.className = "popular_content";
     var video = document.createElement("video");
     video.controls = "controls";
     video.id = "popular_video";

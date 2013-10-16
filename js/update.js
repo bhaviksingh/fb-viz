@@ -14,7 +14,7 @@ function update_svg() {
 
 function update_status(status) {
   // how to update
-  d3.select(".status").text(status);
+  d3.select("#popular_status").text(status);
 }
 
 // function update_link(link) {
@@ -23,7 +23,7 @@ function update_status(status) {
 // }
 
 function update_photo(photo) {
-  document.querySelector(".photo > img").src = photo;
+  document.querySelector("#popular_img").src = photo;
   $(".photo").load();
   //console.log(d3.select(".photo")); // = photo;
 }
